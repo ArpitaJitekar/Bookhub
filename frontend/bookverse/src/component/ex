@@ -1,0 +1,53 @@
+  { {showform? <>
+<div className="img-cont">
+   
+       <label htmlFor='uploadImage'></label>
+       <div className="uploadbox">
+       
+      
+      {imgs?<img src={imgs}className="image-upload-box" alt="not able to display "/>:<><input type="file" id="uploadImage" ref={fileInputRef} onChange={handleUpload}/><button onClick={handleClick}><FaUser htmlFor="file-input"/></button></>}
+       </div>
+    
+    </div>     
+   
+   
+     
+    <button onClick={handleSubmit} className="image-upload">Upload</button>
+     {<img src={imag[0].image} alt="not able to display " height={200}  width={200} /> }
+    
+     
+   
+    
+  
+
+     <div className="user-info">
+    
+     <div className="form-group my-3 mx-3">
+    <label htmlFor="Title">UserName</label>
+    <input type="text" value={username} onChange={(e)=>{setusername(e.target.value)}} className="form-control" id="title" aria-describedby="emailHelp"/>
+   </div>
+ <form >
+  <div className="form-group my-3 mx-3">
+    <label htmlFor="email">Email</label>
+    <input type="text" value={emailId} onChange={(e)=>{setemailId(e.target.value)}} className="form-control" id="email" aria-describedby="emailHelp"/>
+  </div>
+  <div className="form-group my-3 mx-3">
+    <label htmlFor="bio">Bio</label>
+    <input type="text" value={userbio} onChange={(e)=>{setuserbio(e.target.value)}} className="form-control" id="bio" aria-describedby="emailHelp"/>
+  </div>
+ 
+  <div className="form-group my-3 mx-3">
+    <label htmlFor="genre">Favourite Genres</label>
+    <input type="text" value={genres} onChange={(e)=>{setgenres(e.target.value)}} className="form-control" id="genre" aria-describedby="emailHelp"/>
+  </div>
+ 
+  <div className="form-group my-3 mx-3">
+    <label htmlFor="bookwishlist">Book Wishlist</label>
+    <input type="text" value={wish} onChange={(e)=>{setwish(e.target.value)}} className="form-control" id="bookwishlist" aria-describedby="emailHelp"/>
+  </div>
+  <button onClick={submit} className="btn btn-sm btn-danger mx-3 my-3">Submit</button>
+  {console.log(isSubmit)}
+  </form>
+      </div>
+      </>
+   }}
