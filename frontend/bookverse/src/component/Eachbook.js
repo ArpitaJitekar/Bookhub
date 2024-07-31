@@ -1,4 +1,4 @@
-import {React}from "react";
+import {React,useState,useEffect}from "react";
 // import Heart from "react-animated-heart";
 
 // import Heart from "react-heart"
@@ -8,8 +8,7 @@ import '../App.css';
 
 const Eachbook = ({book,onDelete,addfavourite,deleteFav,addtocart}) => {
  
-  // const[isClick,setClick]=useState(false)
-
+ 
  
 //  const favFunction=()=>{
 //   let b;
@@ -25,7 +24,7 @@ const Eachbook = ({book,onDelete,addfavourite,deleteFav,addtocart}) => {
 
 
  
- console.log("this is img",book.file)
+ 
       return (
         <div className="book-div">
        <h3 className="book-tile">{book.title}</h3>
@@ -33,7 +32,11 @@ const Eachbook = ({book,onDelete,addfavourite,deleteFav,addtocart}) => {
         <li >Author:{book.author}</li>
         <li>Genre:{book.genre}</li>
        </ul>
-       <img src={book.file} className="img-book" alt={book.title}/>
+     <img src={book.file} className="img-book" alt={book.title}/>
+     
+        
+     
+       {/* <img src={book.file} className="img-book" alt={book.title}/> */}
        <p className="desc">Description:{book.desc}</p>
        <div className="btn-fav-delete">
        <button className="btn btn-danger" onClick={()=>{onDelete(book)}}>Delete</button>

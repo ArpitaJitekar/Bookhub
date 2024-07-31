@@ -1,7 +1,7 @@
 const Mongoose =require('mongoose')
 const bookSchema=new Mongoose.Schema({
    
-    file:String,
+    image:String,
    
     
 })

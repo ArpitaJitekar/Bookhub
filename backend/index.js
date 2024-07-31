@@ -4,96 +4,152 @@ const path=require('path')
 require('./db/cofig')
 const User=require('./db/User')
 const Book=require('./db/Book')
-const profileImage=require('./db/Profile image')
-const profileInfo=require('./db/ProfileInfo')
 
+const profileInfo=require('./db/ProfileInfo')
+const bcrypt=require('bcryptjs');
+const jwt=require('jsonwebtoken')
+const jwt_secret="egdytvwi7263{]222ft2vn874cyt3yg494825"
 const app=express()
 
 const multer=require('multer')
 const storage=multer.diskStorage({
     destination:function(req,file,cb){
-        cb(null,'./profile/');
+        cb(null,'../frontend/bookverse/src/profiles/');
     },
     filename:function(req,file,cb){
-        cb(null, Date.now() + path.extname(file.originalname))
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, uniqueSuffix + file.originalname)
     }
 })
+
+const storage1 = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '../frontend/bookverse/src/images/')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, uniqueSuffix+ file.originalname  )
+    }
+  })
+  
+  const upload = multer({ storage: storage1 })
+
 const profileupload=multer({storage:storage})
+
 app.use(express.json({limit:"10mb"}))
+
 app.use(cors())
-// app.use('/profile',express.static('profile'))
+
 
 
 app.post('/signup',async(req,resp)=>{
-    const user=new User(req.body)
-    let result=await user.save()
-    result=result.toObject()
-    delete result.password
-    resp.send(result)
+    const{name,email,password}=req.body
+    const existinguser=await User.findOne({email})
+    const encryptedpassword=await bcrypt.hash(password,10)
+    if(existinguser){
+       return resp.send({error:"user exists"})
+    }
+    try{
+        await User.create({
+            name,email,
+            password:encryptedpassword,
+        })
+        resp.send({status:"ok"})
+    } catch(err){
+        resp.send({status:err})
+    }
+  
 })
 //here password is removed 
 app.post('/login',async(req,resp)=>{
-    if(req.body.password && req.body.email){
+   const {email,password}=req.body
+   const user=await User.findOne({email})
+   if(!user){
+    return resp.send({error:"user not found"})
+   }
+   if(await bcrypt.compare(password,user.password)){
+    const token=jwt.sign({email:user.email},jwt_secret)
+    if(resp.status(201)){
+        return resp.json({status:"ok",data:token})
+    }else{
+       return  resp.json({status:"error"})
+    }}else{
+        resp.json({status:"error",message:"Invalid password"})
     
-    const user=await User.findOne(req.body).select("-password")
-       user?resp.send(user):resp.send("no user found")
-    }
-    else{
-        resp.send("please enter both fields")
-    }
+   }
+    
 })
-// app.post('/addBook',addBook.single("file"),async(req,resp)=>{
-//     let book=new Book(req.body)
-//     req.body.images.push("file")
-//     let result=await book.save()
-//     resp.send(result)
-// })
+
+//api for saving profile onfo from form into database
 app.post('/setprofile',profileupload.single('image'),async(req,resp)=>{
+    console.log("This is my request",req.body,req.file.filename);
+    const imagename=req.file.filename
    
-    let info=new profileInfo( 
-    {
-        username:req.body.username,
-        emailId:req.body.emailId,
-        userbio:req.body.userbio,
-        // image:req.file.filename,
-        genres:req.body.genres,
-        wish:req.body.wish,
-        userId:req.body.userId
-        
-})
-     
-     info=await info.save()
-    resp.send({info})
+
+    try {
+        await profileInfo.create({username:req.body.username,
+            emailId:req.body.emailId,
+            userbio:req.body.userbio,
+            image:imagename,
+            genres:req.body.genres,
+            wish:req.body.wish,
+            userId:req.body.id})
+        resp.json({status:"ok"})
+    } catch (error) {
+        resp.json({status:error})
+    }
 })
 
-
+//api to sen profile info on profile page
 app.get('/profile',async(req,resp)=>{
-const profile=await profileInfo.findOne()
-const formattedProfile = {
-    image: profile.image,
-    username: profile.username,
-    emailId: profile.emailId,
-    wish: profile.wish,
-     genres: profile.genres,
-    uerbio: profile.userbio
-  }
-resp.json(formattedProfile)
+    try {
+        const data=await profileInfo.findOne()
+        resp.send({ status: "ok", data:data })
+        
+    } catch (error) {
+        resp.json({status:error})
+    }
+   
+
 
 })
-app.put('/setprofile',async(req,resp)=>{
-    let data=await profileInfo.updateOne(req.params,
-        {$set:req.body})
-    resp.send(data)
+app.post('/update',profileupload.single("image"),async(req,resp)=>{
+   const {id,username,userbio,genres,wish,imgs}=req.body
+   try {
+    const res=await profileInfo.updateOne({_id:id},{
+        $set:{
+            username:username,
+            userbio:userbio,
+            genres:genres,
+            wish:wish,
+            image:imgs,  
+        }
+    })
+    return resp.json({status:"ok",data:res})
+   } catch (error) {
+    return resp.json({status:"error",data:error})
+   }
 })
 
-app.post('/addBook',async(req,resp)=>{
-    console.log(req.body);
-    let book=new Book( req.body )
-     book=await book.save()
-    resp.send(book)
+app.post('/addBook',upload.single("image"),async(req,resp)=>{
+    console.log("This is my request",req.body,req.file.filename);
+    const imagename=req.file.filename
+    try {
+        await Book.create({image:imagename})
+        resp.json({status:"ok"})
+    } catch (error) {
+        resp.json({status:error})
+    }
 })
-app.get('/',async(req,resp)=>{
-    const bookinfo=await Book.find({})
-    resp.json({bookinfo:bookinfo})
+app.get('/image',async(req,resp)=>{
+    try {
+        const data=await Book.find({})
+        resp.send({ status: "ok", data:data })
+        
+    } catch (error) {
+        resp.json({status:error})
+    }
+  
+   
     })
 app.listen(5000)

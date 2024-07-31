@@ -12,10 +12,30 @@ import Userprofile from './component/Userprofile';
 import Edituserprofile from './component/Edituserprofile';
 import { BrowserRouter,Routes ,Route} from 'react-router-dom';
 import Cart from './component/Cart';
+import axios from 'axios'
+import Profileupdate from './component/Profileupdate';
+ const images = require.context('./images', false, /\.(png|jpe?g|svg|web?p)$/)
 
 function App() {
+  const [allimg,setallimg]=useState([]);
   let initfav;
   let initbook;
+
+  const getimage=async()=>{
+    // let result=await fetch("http://localhost:5000/eachbook")
+    // result=await result.json()
+    // console.log("this si",result.data.image);
+    // setallimg(result.data.data)
+    const result=await axios.get("http://localhost:5000/image");
+    console.log("this is result",result.data.data)
+    setallimg(result.data.data)
+  }
+  // const[isClick,setClick]=useState(false)
+useEffect(()=>{
+  getimage()
+
+},[])
+
   const onDelete=(book)=>{
     console.log(`I am onDelete of ${book}`)
     setbooks(books.filter((e)=>{
@@ -36,26 +56,30 @@ function App() {
     }
   }
 
-    const addBook=(desc,title,author,genre,file)=>{
+  
+
+  const addBook=(desc,title,author,genre,file)=>{
     
-      let sno;
-      if (books.length===0){
-        sno=1
-      }
-      else{
-        sno=books[(books.length-1)].sno+1
-      }
-      const myBook={
-        sno:sno,
-        title:title,
-        author:author,
-        file:file,
-        genre:genre,
-        desc:desc
-      }
-      setbooks([...books,myBook])
-      
+    let sno;
+    if (books.length===0){
+      sno=0
     }
+    else{
+      sno=books[(books.length-1)].sno+1
+    }
+    console.log("image",allimg[sno].image)
+    const myBook={
+      sno:sno,
+      title:title,
+      author:author,
+      // file:images(`/${allimg[sno].image}`),
+      file:file,
+      genre:genre,
+      desc:desc
+    }
+    setbooks([...books,myBook])
+    
+  }
 
 
   const [books,setbooks]=useState(initbook)
@@ -88,7 +112,7 @@ localStorage.setItem("favourites",JSON.stringify(fav))
 console.log("thiss is from fav file",fav)
 }
  // const [active, setActive] = useState(false)
-  const addfavourite=(title,author,genre,file,desc)=>{
+  const addfavourite=(title,author,genre,desc,file)=>{
  
    let no;
    if (fav.length===0){
@@ -104,6 +128,7 @@ console.log("thiss is from fav file",fav)
      title:title,
      author:author,
      genre:genre,
+    //  
     file:file,
      desc:desc
    }
@@ -132,7 +157,7 @@ console.log("thiss is from fav file",fav)
 }
 
  
-  const addtocart=(title,author,genre,file,desc)=>{
+  const addtocart=(title,author,genre,desc,file)=>{
  
    let no;
    if (cart.length===0){
@@ -148,6 +173,7 @@ console.log("thiss is from fav file",fav)
      title:title,
      author:author,
      genre:genre,
+    // file:`/images/${allimg[no].image}`,
     file:file,
      desc:desc
    }
@@ -172,6 +198,7 @@ console.log("thiss is from fav file",fav)
     </>}/>
     <Route path='/profile' element={<Userprofile/>}/>
     <Route path='/setprofile' element={<Edituserprofile/>}/>
+    <Route  path='/update' element={<Profileupdate/>}/>
     <Route path='/addBook' element={ <Addbook  addBook={addBook}/>} />
     {/* pass fav array in parameter of <Favourite/> */}
     <Route path='/favourites' element={<Favourite fav={fav}/>}/>

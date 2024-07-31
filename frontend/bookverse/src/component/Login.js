@@ -15,14 +15,17 @@ const Login = () => {
       
       let result=await fetch("http://localhost:5000/login",{
         method:'post',
-        body:JSON.stringify({password,email}),
+        body:JSON.stringify({email,password}),
         headers:{
           'Content-Type':'application/json'
         }
       })
       result=await result.json()
-      if(result){
+      if(result.status==='ok'){
         localStorage.setItem("user",JSON.stringify(result))
+       Window.localStorage.setItem("token",result.data)
+       Window.localStorage.setItem("isloggedin",true);
+       Window.location.href='http://localhost:3000/'
       }
       else{
         console.log("error")

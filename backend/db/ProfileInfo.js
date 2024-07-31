@@ -1,13 +1,13 @@
 const Mongoose =require('mongoose')
 const profileSchema=new Mongoose.Schema({
     username:String,
-    emailId:String,
+    emailId:{type:String,unique:true},
     userbio:String,
     genres:String,
     wish:String,
     image:String,
     userId:String,
-    userId:String
+   
 
 })
-module.exports=Mongoose.model('profile',profileSchema)
+module.exports=Mongoose.model('profiles',profileSchema)
