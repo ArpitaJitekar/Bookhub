@@ -32,13 +32,7 @@ const Profileupdate = () => {
         let res=await fetch("http://localhost:5000/update",{
             method:'post',
             body:formData
-            // body:JSON.stringify({
-            //     id:location.state._id,
-            //     username:username,
-            //     userbio:userbio,
-            //     wish:wish,
-               // imgs:location.state.image
-            // }),
+           
     })
 res=await res.json()
     console.log("This is updated info",res)

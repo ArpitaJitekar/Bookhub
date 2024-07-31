@@ -94,7 +94,7 @@ const Edituserprofile = () => {
    
    <label htmlFor='uploadImage'></label>
    <div className="uploadbox">
-   {imgs?<img src={imgs}className="image-upload-box" alt="not able to display "/>:<> <input type="file" className="custom-file-input " accept="image/*" onChange={handleUpload} id="customFile"/></>}
+   {imgs?<img src={imgs}className="image-upload-box" alt="not able to display "/>:<> <input type="file" className="custom-file-input " accept="image/*" onChange={handleUpload} id="customFile"/> </>}
   
   {/* {imgs?<img src={imgs}className="image-upload-box" alt="not able to display "/>:<><input type="file" name="image"id="uploadImage" ref={fileInputRef} onChange={handleUpload}/><button onClick={handleClick}><FaUser htmlFor="file-input"/></button></>} */}
    </div>
