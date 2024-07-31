@@ -114,7 +114,7 @@ app.get('/profile',async(req,resp)=>{
 
 })
 app.post('/update',profileupload.single("image"),async(req,resp)=>{
-   const {id,username,userbio,genres,wish,imgs}=req.body
+   const {id,username,userbio,genres,wish,image}=req.body
    try {
     const res=await profileInfo.updateOne({_id:id},{
         $set:{
@@ -122,7 +122,7 @@ app.post('/update',profileupload.single("image"),async(req,resp)=>{
             userbio:userbio,
             genres:genres,
             wish:wish,
-            image:imgs,  
+            image:image,  
         }
     })
     return resp.json({status:"ok",data:res})

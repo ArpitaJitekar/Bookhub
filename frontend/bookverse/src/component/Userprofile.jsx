@@ -50,7 +50,6 @@ useEffect(()=>{
     
       <div className="header">
       <h5 className='comp'>Name:{profile.username}</h5>
-      <h6 className='comp'>Email:{profile.emailId}</h6>
       <h6 className='comp'>Bio:{profile.userbio}</h6>
       <h6 className='comp'>Favourite Genre:{profile.genres}</h6>
       <h6 className='comp'>Book wishlist:{profile.wish}</h6>

@@ -17,7 +17,8 @@ const Profileupdate = () => {
     setwish(location.state.wish)
    })
     
-    const submit=async()=>{
+    const submit=async(e)=>{
+        e.preventDefault()
         console.log("its working")
         const formData = new FormData();
           formData.append("username", location.state.username);
@@ -39,7 +40,7 @@ const Profileupdate = () => {
                // imgs:location.state.image
             // }),
     })
-res=res.json()
+res=await res.json()
     console.log("This is updated info",res)
  window.location.href='/profile'
 }
